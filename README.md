@@ -1,3 +1,5 @@
+<img src="assets/proton-pack.png" alt="My Screenshot" width="250"/>
+
 # Proton Pack - A Database Migration Safety Analyzer 
 Proton Pack let's you analyze your database migrations and find potential issues
 before they are deployed to production. This will help you to avoid data loss.
