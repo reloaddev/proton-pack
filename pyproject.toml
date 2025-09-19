@@ -1,0 +1,19 @@
+[project]
+name = "proton-pack"
+version = "1.0.0"
+description = "Databse Migration Safety Analyzer"
+requires-python = ">=3.11"
+dependencies = [
+    "click>=8.1",
+    "sqlglot>=23"
+]
+
+[project.scripts]
+proton-pack = "proton_pack.main:cli"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
