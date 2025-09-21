@@ -6,6 +6,6 @@ down:
 logs:
 	docker compose logs -f db
 psql:
-	docker compose exec db psql -U sw -d starwars
+	docker compose exec db psql -U peter_venkman -d ghostbusters
 reset:     ## nuke data
 	docker compose down -v

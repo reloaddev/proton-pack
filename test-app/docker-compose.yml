@@ -3,18 +3,18 @@ services:
     image: postgres:16-alpine
     ports:
       - 5432:5432
-    container_name: sw-db
+    container_name: ghostbusters-wiki-db
     environment:
-      POSTGRES_DB: starwars
-      POSTGRES_USER: sw
-      POSTGRES_PASSWORD: sw
+      POSTGRES_DB: ghostbusters
+      POSTGRES_USER: peter_venkman
+      POSTGRES_PASSWORD: ghost
     volumes:
-      - sw_pgdata:/var/lib/postgresql/data
+      - ghostbusters_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U sw -d starwars || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U peter_venkman -d ghostbusters || exit 1"]
       interval: 5s
       timeout: 3s
       retries: 10
 
 volumes:
-  sw_pgdata:
+  ghostbusters_pgdata:

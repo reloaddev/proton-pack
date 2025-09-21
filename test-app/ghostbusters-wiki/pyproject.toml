@@ -1,7 +1,7 @@
 [project]
-name = "sw_wiki"
+name = "ghostbusters_wiki"
 dependencies = [
-    "flask",
+    "flask"
 ]
 
 [build-system]

@@ -7,7 +7,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = (
-        'postgresql://sw:sw@localhost:5432/starwars'
+        'postgresql://peter_venkman:ghost@localhost:5432/ghostbusters'
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -16,10 +16,10 @@ def create_app():
 
     # Must be imported after db is initialized to avoid circular imports
     # Consider a better way to handle this
-    from .models.star_fighter import StarFighter
+    from .models.ghost import Ghost
 
-    @app.route('/star-fighters')
-    def star_fighters():
-        fighters = StarFighter.query.all()
-        return jsonify([{"id": f.id, "name": f.name} for f in fighters])
+    @app.route('/ghosts')
+    def ghosts():
+        ghosts = Ghost.query.all()
+        return jsonify([{"id": f.id, "name": f.name} for f in ghosts])
     return app
