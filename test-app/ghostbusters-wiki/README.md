@@ -21,3 +21,4 @@ The ghostbusters-wiki test app can be deployed using make. Check the README.md o
 - (One time only) Run `flask --app ghostbusters_wiki db init` to create a migration repository.
 - Run `flask --app ghostbusters_wiki db migrate -m "Migration message"` to generate a migration.
 - Run `flask --app ghostbusters_wiki db upgrade` to apply the migration. This will most likely change your database schema.
+Often times, running a migration will also include some type of seeding, meaning that the migration will also insert data into the database.
