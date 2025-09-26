@@ -16,5 +16,21 @@ services:
       timeout: 3s
       retries: 10
 
+  app:
+    build:
+      context: ./ghostbusters-wiki
+      dockerfile: Dockerfile
+    container_name: ghostbusters-wiki-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://peter_venkman:ghost@db:5432/ghostbusters
+      FLASK_APP: ghostbusters-wiki/ghostbusters_wiki/wsgi.py:create_app
+      FLASK_ENV: development
+      PORT: "8000"
+    ports:
+      - "8000:8000"
+
 volumes:
   ghostbusters_pgdata:

@@ -22,3 +22,16 @@ The ghostbusters-wiki test app can be deployed using make. Check the README.md o
 - Run `flask --app ghostbusters_wiki db migrate -m "Migration message"` to generate a migration.
 - Run `flask --app ghostbusters_wiki db upgrade` to apply the migration. This will most likely change your database schema.
 Often times, running a migration will also include some type of seeding, meaning that the migration will also insert data into the database.
+
+## Generate SQL version of migrations
+Flask-Migrate migrations are typically python files. They are converted behind the scenes by a library
+called Alembic. If you want, for any reason, see the SQL version of a migration, you can generate by 
+using the following commands. Just use the `<version-no>` from the Python migration file, that you want to
+transform into SQL.
+```
+## Step into application directory
+cd ghostbusters-wiki
+
+## Create SQL version of Flask-Migrate migration
+flask --app ghostbusters_wiki db upgrade <version-no> --sql > migrations/sql/<version-no>.sql
+```

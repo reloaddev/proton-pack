@@ -1,0 +1,23 @@
+BEGIN;
+
+CREATE TABLE alembic_version (
+    version_num VARCHAR(32) NOT NULL, 
+    CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num)
+);
+
+-- Running upgrade  -> 33018f72f5b1
+
+CREATE TABLE ghost (
+    id SERIAL NOT NULL, 
+    name VARCHAR(128), 
+    PRIMARY KEY (id)
+);
+
+INSERT INTO ghost (id, name) VALUES (1, 'Slimer');
+
+INSERT INTO ghost (id, name) VALUES (2, 'Zuul');
+
+INSERT INTO alembic_version (version_num) VALUES ('33018f72f5b1') RETURNING alembic_version.version_num;
+
+COMMIT;
+
