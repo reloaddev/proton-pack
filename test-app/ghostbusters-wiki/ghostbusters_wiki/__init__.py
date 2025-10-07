@@ -21,10 +21,16 @@ def create_app():
     # Must be imported after db is initialized to avoid circular imports
     # Consider a better way to handle this
     from .models.ghost import Ghost
+    from .models.weapon import Weapon
 
     @app.route('/ghosts')
-    def ghosts():
+    def getGhosts():
         ghosts = Ghost.query.all()
         return jsonify([{"id": f.id, "name": f.name} for f in ghosts])
+
+    @app.route('/weapons')
+    def getWeapons():
+        weapons = Weapon.query.all()
+        return jsonify([{"id": w.id, "name": w.name} for w in weapons])
 
     return app
