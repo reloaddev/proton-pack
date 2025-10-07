@@ -1,5 +1,7 @@
 import sys
 import click
+
+from .migration.analyzer import analyze_ast
 from .migration.parser import parse_sql_to_ast
 
 @click.group()
@@ -15,13 +17,14 @@ def debug(sql):
     click.echo(f"AST \n===\n {ast} \n\n")
 
 
-@cli.command(name="check")
+@cli.command(name="analyze")
 @click.argument("sql")
-def check_migration(sql):
+def analyze_migration(sql):
     ast = parse_sql_to_ast(sql)
-    if "Drop" in ast:
-        click.echo("DROP statement detected. Potential data loss!!!")
+    result = analyze_ast(ast)
+    if result["DROP_DETECTED"]:
+        click.echo("Migration check failed! DROP statements detected.")
         sys.exit(1)
-    click.echo("Migration check passed")
+    click.echo("Migration check passed.")
     sys.exit(0)
 
