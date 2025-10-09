@@ -30,3 +30,20 @@ def analyze_migration(sql):
         sys.exit(1)
     click.echo("Migration check passed.")
     sys.exit(0)
+
+
+@cli.command(name="analyze-file")
+@click.argument("file_path")
+def analyze_migration_file(file_path):
+    with open(file_path, "r") as f:
+        sql = f.read()
+    ast = parse_sql_to_ast(sql)
+    result = analyze_ast(ast)
+    if result["DROP_DETECTED"]:
+        click.echo("Migration check failed! DROP statements detected.")
+        sys.exit(1)
+    if result["FOREIGN_KEY_WITHOUT_SUPP_INDEX"]:
+        click.echo("Migration check failed! Foreign key without supplementary index detected.")
+        sys.exit(1)
+    click.echo("Migration check passed.")
+    sys.exit(0)
