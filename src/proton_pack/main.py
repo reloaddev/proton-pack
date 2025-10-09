@@ -25,6 +25,8 @@ def analyze_migration(sql):
     if result["DROP_DETECTED"]:
         click.echo("Migration check failed! DROP statements detected.")
         sys.exit(1)
+    if result["FOREIGN_KEY_WITHOUT_SUPP_INDEX"]:
+        click.echo("Migration check failed! Foreign key without supplementary index detected.")
+        sys.exit(1)
     click.echo("Migration check passed.")
     sys.exit(0)
-
