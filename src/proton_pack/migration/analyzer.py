@@ -1,6 +1,8 @@
 from typing import Dict
 from sqlglot import exp
 
+from proton_pack.migration.rules.drop_columns import check_for_drop_columns
+
 
 def analyze_ast(ast: exp.Expression) -> Dict[str, bool]:
     """
@@ -9,5 +11,4 @@ def analyze_ast(ast: exp.Expression) -> Dict[str, bool]:
     Current checks:
       - DROP_DETECTED: True if any DROP statement is present anywhere in the tree.
     """
-    drop_detected = ast.find(exp.Drop) is not None
-    return {"DROP_DETECTED": drop_detected}
+    return {"DROP_DETECTED": check_for_drop_columns(ast)}
