@@ -1,0 +1,64 @@
+from proton_pack.migration.parser import parse_sql_to_ast
+from proton_pack.migration.rules.foreign_key_without_supporting_indexes import \
+    check_for_foreign_key_without_supplementary_indexes
+
+
+def test_adding_fk_index_on_table_creation():
+    # given
+    sql = """
+        CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES Human(id));
+        CREATE INDEX ON ghost (reporter_id);
+    """
+
+    # when
+    ast = parse_sql_to_ast(sql)
+    result = check_for_foreign_key_without_supplementary_indexes(ast)
+
+    # then
+    assert result is False
+
+
+def test_missing_fk_index_on_table_creation():
+    # given
+    sql = "CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES Human(id));"
+
+    # when
+    ast = parse_sql_to_ast(sql)
+    result = check_for_foreign_key_without_supplementary_indexes(ast)
+
+    # then
+    assert result is True
+
+
+# TODO Change implementation, so it can correctly detect when an fk index is dropped
+# def test_removing_fk_index_from_existing_table():
+#     # given
+#     sql = """
+#         CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES human(id));
+#         CREATE INDEX reporter_id_idx ON ghost (reporter_id);
+#         ALTER TABLE ghost DROP INDEX reporter_id_idx;
+#     """
+#
+#     # when
+#     ast = parse_sql_to_ast(sql)
+#     result = check_for_foreign_key_without_supplementary_indexes(ast)
+#
+#     # then
+#     assert result is True
+
+
+def test_adding_fk_index_to_wrong_table():
+    # given
+    sql = """
+        CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES human(id));
+        CREATE INDEX ON weapon (inventor_id);
+    """
+
+    # when
+    ast = parse_sql_to_ast(sql)
+    result = check_for_foreign_key_without_supplementary_indexes(ast)
+
+    # then
+    assert result is True
+
+
