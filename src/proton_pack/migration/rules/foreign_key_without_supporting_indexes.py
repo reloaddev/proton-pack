@@ -30,10 +30,10 @@ def check_for_foreign_key_without_supplementary_indexes(ast: List[exp.Expression
             col_tuple: tuple[str, ...] = tuple(c.lower() for c in indexed_cols)
             indexed_columns.add((table["name"], col_tuple))
 
-        for fk_col in fk_columns:
-            for indexed_col in indexed_columns:
-                if fk_col == indexed_col:
-                    return False
+    for fk_col in fk_columns:
+        for indexed_col in indexed_columns:
+            if fk_col == indexed_col:
+                return False
 
     return True
 
@@ -48,7 +48,7 @@ def _find_referencing_columns_for(fk: exp.ForeignKey) -> list:
     if expressions:
         names = []
         for expr in expressions:
-            ident = expr if isinstance(expr, exp.Identifier) else fk.find(exp.Identifier)
+            ident = expr if isinstance(expr, exp.Identifier) else expr.find(exp.Identifier)
             if ident:
                 names.append(ident.name)
         return names
