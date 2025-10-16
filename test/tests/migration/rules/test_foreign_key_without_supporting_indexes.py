@@ -30,13 +30,12 @@ def test_missing_fk_index_on_table_creation():
     assert result is True
 
 
-# TODO Change implementation, so it can correctly detect when an fk index is dropped
-# def test_removing_fk_index_from_existing_table():
+# def test_fk_constraint_counter():
 #     # given
 #     sql = """
-#         CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES human(id));
-#         CREATE INDEX reporter_id_idx ON ghost (reporter_id);
-#         ALTER TABLE ghost DROP INDEX reporter_id_idx;
+#         CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER);
+#         ALTER TABLE ghost ADD CONSTRAINT fk_reporter FOREIGN KEY (reporter_id) REFERENCES human(id);
+#         ALTER TABLE ghost DROP CONSTRAINT fk_reporter;
 #     """
 #
 #     # when
@@ -45,6 +44,41 @@ def test_missing_fk_index_on_table_creation():
 #
 #     # then
 #     assert result is True
+
+
+# TODO Change implementation, so it can correctly detect when an fk index is dropped
+# def test_removing_index_from_existing_fk():
+#     # given
+#     sql = """
+#         CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES human(id));
+#         CREATE INDEX reporter_id_idx ON ghost (reporter_id);
+#
+#         -- Some other migrations
+#
+#         ALTER TABLE ghost DROP INDEX reporter_id_idx;
+#     """
+#
+#     # when
+#     ast = parse_sql_to_ast(sql)
+#     result = check_for_foreign_key_without_supplementary_indexes(ast)
+#
+#     # then
+#     assert result is False
+
+
+def test_finding_foreign_key_constraint():
+    # given
+    sql = """
+        CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER);
+        ALTER TABLE ghost ADD CONSTRAINT fk_reporter FOREIGN KEY (reporter_id) REFERENCES human(id);
+    """
+
+    # when
+    ast = parse_sql_to_ast(sql)
+    result = check_for_foreign_key_without_supplementary_indexes(ast)
+
+    # then
+    assert result is True
 
 
 def test_adding_fk_index_to_wrong_table():

@@ -17,6 +17,16 @@ def debug(sql):
     click.echo(f"AST \n===\n {ast} \n\n")
 
 
+@cli.command(name="debug-file")
+@click.argument("file_path")
+def debug_file(file_path):
+    with open(file_path, "r") as f:
+        sql = f.read()
+    click.echo(f"\n\nSQL \n===\n {sql} \n\n")
+    ast = parse_sql_to_ast(sql)
+    click.echo(f"AST \n===\n {ast} \n\n")
+
+
 @cli.command(name="analyze")
 @click.argument("sql")
 def analyze_migration(sql):
