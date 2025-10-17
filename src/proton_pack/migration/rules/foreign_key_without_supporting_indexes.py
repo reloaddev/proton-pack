@@ -1,5 +1,4 @@
-import array
-from typing import List, Dict
+from typing import List
 
 from sqlglot import exp
 

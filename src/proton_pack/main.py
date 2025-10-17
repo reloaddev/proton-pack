@@ -38,6 +38,10 @@ def analyze_migration(sql):
     if result["FOREIGN_KEY_WITHOUT_SUPP_INDEX"]:
         click.echo("Migration check failed! Foreign key without supplementary index detected.")
         sys.exit(1)
+    if result["NON_CONCURRENT_INDEX_BUILDS"]:
+        click.echo("Migration check failed! Found index, that is not concurrently built.")
+        sys.exit(1)
+
     click.echo("Migration check passed.")
     sys.exit(0)
 
@@ -55,5 +59,9 @@ def analyze_migration_file(file_path):
     if result["FOREIGN_KEY_WITHOUT_SUPP_INDEX"]:
         click.echo("Migration check failed! Foreign key without supplementary index detected.")
         sys.exit(1)
+    if result["NON_CONCURRENT_INDEX_BUILDS"]:
+        click.echo("Migration check failed! Found index, that is not concurrently built.")
+        sys.exit(1)
+
     click.echo("Migration check passed.")
     sys.exit(0)
