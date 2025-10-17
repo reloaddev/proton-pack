@@ -3,6 +3,8 @@ import click
 
 from .migration.analyzer import analyze_ast
 from .migration.parser import parse_sql_to_ast
+from .pretty_printer import pretty_print
+
 
 @click.group()
 def cli():
@@ -26,14 +28,9 @@ def analyze(file_path):
         sql = f.read()
     ast = parse_sql_to_ast(sql)
     result = analyze_ast(ast)
-    if result["DROP_DETECTED"]:
-        click.echo("Migration check failed! DROP statements detected.")
-        sys.exit(1)
-    if result["FOREIGN_KEY_WITHOUT_SUPP_INDEX"]:
-        click.echo("Migration check failed! Foreign key without supplementary index detected.")
-        sys.exit(1)
-    if result["NON_CONCURRENT_INDEX_BUILDS"]:
-        click.echo("Migration check failed! Found index, that is not concurrently built.")
+    pretty_print(result)
+
+    if any(result):
         sys.exit(1)
 
     click.echo("Migration check passed.")
