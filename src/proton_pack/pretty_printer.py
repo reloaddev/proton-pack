@@ -1,18 +1,19 @@
-from typing import Dict
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
 
-
-def pretty_print(result: Dict[str, bool]):
-    if not any(result):
+def pretty_print(result):
+    if not any(result.values()):
         return
 
-    print('\n')
+    console = Console()
+    text = Text("Migration Check Failed", style="bold red")
+    body = "\n"
+    if result.get("DROP_DETECTED"):
+        body += "🔥 [bold yellow]DROP[/] statements detected (possible data loss)\n"
+    if result.get("FOREIGN_KEY_WITHOUT_SUPP_INDEX"):
+        body += "🧩 [bold yellow]FOREIGN KEY[/] without index (slow queries)\n"
+    if result.get("NON_CONCURRENT_INDEX_BUILDS"):
+        body += "⏳ [bold yellow]INDEX[/] not built concurrently (table locks)\n"
 
-    print("!! Migration Check Failed !!")
-    if result["DROP_DETECTED"]:
-        print(" - DROP statements detected. This can lead to data loss.")
-    if result["FOREIGN_KEY_WITHOUT_SUPP_INDEX"]:
-        print(" - FOREIGN KEY without supplementary index detected. This can result in suboptimal query performance.")
-    if result["NON_CONCURRENT_INDEX_BUILDS"]:
-        print(" - INDEX detected, that is not concurrently built. This can lead to locked database tables.")
-
-    print('\n')
+    console.print(Panel(body, title=text))
