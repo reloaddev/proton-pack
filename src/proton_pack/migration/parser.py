@@ -1,4 +1,8 @@
-from sqlglot import parse_one
+from typing import List
 
-def parse_sql_to_ast(sql):
-    return parse_one(sql, dialect="postgres")
+from sqlglot import exp, parse
+
+
+def parse_sql_to_ast(sql) -> List[exp.Expression]:
+    parsed = parse(sql, dialect="postgres")
+    return [p for p in parsed if p is not None]

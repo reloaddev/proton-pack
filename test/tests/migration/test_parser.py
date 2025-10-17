@@ -7,7 +7,8 @@ def test_parse_sql_to_ast():
     sql = "SELECT * FROM ghosts;"
 
     # when
-    ast = parse_sql_to_ast(sql)
+    ast_list = parse_sql_to_ast(sql)
+    ast = ast_list[0]
 
     # then
     assert isinstance(ast, exp.Select)
