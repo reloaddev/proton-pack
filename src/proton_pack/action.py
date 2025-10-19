@@ -11,7 +11,9 @@ with open(file_path, "r") as f:
 ast = parse_sql_to_ast(sql)
 result = analyze_ast(ast)
 
-print(f"::set-output name=analysis_result::{result}")
+output_path = os.environ.get('GITHUB_OUTPUT')
+with open(output_path, 'a') as f:
+    f.write(f'analysis_result={result}\n')
 
 if any(result):
     sys.exit(1)
