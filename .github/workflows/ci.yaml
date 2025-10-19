@@ -15,5 +15,3 @@ jobs:
         uses: ./.github/actions/proton_pack
         with:
           migration_file: './test-app/ghostbusters-wiki/migrations/sql/test-migration.sql'
-      - name: Print analysis result
-        run: echo "${{ steps.proton_pack.outputs.analysis_result }}"
