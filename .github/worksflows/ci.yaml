@@ -1,0 +1,17 @@
+name: Test Action
+on: [pull_request]
+
+jobs:
+  analyze_migration_file:
+    runs-on: ubuntu-latest
+    name: Runs Proton Pack analyzer on migration file
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run analyzer
+        id: proton_pack
+        uses: ./.github/actions/
+        with:
+          migration_file: './test-app/ghostbusters-wiki/migrations/sql/test-migration.sql'
+      - name: Print analysis result
+        run: echo "${{ steps.proton_pack.outputs.analysis_result }}"
