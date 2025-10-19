@@ -1,5 +1,7 @@
-name: Test Action
-on: [pull_request]
+name: Proton Pack Test Action
+on:
+  pull_request:
+    types: [synchronize]
 
 jobs:
   analyze_migration_file:
