@@ -1,5 +1,7 @@
 [project]
 name = "ghostbusters_wiki"
+version = "0.1.0"
+description = "Test app to try out Proton Pack"
 dependencies = [
     "flask"
 ]
