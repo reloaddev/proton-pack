@@ -1,0 +1,18 @@
+name: Proton Pack Test Action
+on:
+  pull_request:
+    types: [synchronize]
+
+jobs:
+  analyze_migration_file:
+    runs-on: ubuntu-latest
+    name: Runs Proton Pack analyzer on migration file
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run analyzer
+        id: proton_pack
+        uses: ./.github/actions/proton_pack
+        with:
+          # TODO: analyze all migration files, introduced by a PR
+          migration_file: './test-app/ghostbusters-wiki/migrations/sql/test-safe-migration.sql'
