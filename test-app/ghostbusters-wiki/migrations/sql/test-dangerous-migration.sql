@@ -1,4 +1,6 @@
 CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, type TEXT, reporter_id INTEGER);
 ALTER TABLE ghost ADD CONSTRAINT fk_reporter FOREIGN KEY (reporter_id) REFERENCES human(id);
+ALTER TABLE ghost ALTER COLUMN name SET NOT NULL;
 CREATE INDEX ON ghost(name);
+ALTER TABLE ghost ALTER COLUMN type DROP NOT NULL;
 DROP COLUMN type on ghost;
