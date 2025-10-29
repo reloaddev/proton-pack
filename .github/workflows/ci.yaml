@@ -22,4 +22,5 @@ jobs:
       - name: Test with pytest
         run: |
           pip install pytest
-          pytest --cov-fail-under=90
+          pytest
+          coverage report --fail-under=90
