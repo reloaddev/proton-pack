@@ -18,7 +18,22 @@ def test_non_concurrent_index_build():
 def test_concurrent_index_build():
     # given
     sql = """
-        CREATE INDEX name_idx CONCURRENTLY ON ghost(name);
+        CREATE INDEX CONCURRENTLY ON ghost(name);
+    """
+
+    # when
+    ast = parse_sql_to_ast(sql)
+    result = has_non_concurrent_index_builds(ast)
+
+    # then
+    assert result is False
+
+
+
+def test_concurrent_index_build_with_named_index():
+    # given
+    sql = """
+        CREATE INDEX CONCURRENTLY name_idx  ON ghost(name);
     """
 
     # when
