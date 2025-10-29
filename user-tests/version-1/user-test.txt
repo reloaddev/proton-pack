@@ -1,0 +1,16 @@
+Acceptance Criteria
+
+1. Each ghost entry must include when it was last seen, so the team can prioritize active cases. In other words, it
+should be mandatory to state when a ghost was last seen when reporting it.
+
+2. Determining a ghost’s spooky level has proven too dangerous. The legal department has requested that we stop
+collecting and storing this information.
+
+3. In the app’s frontend, when viewing a specific ghost, information about the human reporter should appear on the same
+page. This requires a clear and consistent link between ghosts and their human reporters.
+
+4. The Ghostbusters wiki now allows users to search for ghosts by name. This search should be fast, even as the
+database grows.
+
+5. The team’s storage bill has skyrocketed recently. The storage of ghost data should be optimized to use less space,
+where possible.
