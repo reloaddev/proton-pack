@@ -1,0 +1,5 @@
+[run]
+omit = [
+    "src/proton_pack/main.py",
+    "src/proton_pack/pretty_printer.py"
+]
