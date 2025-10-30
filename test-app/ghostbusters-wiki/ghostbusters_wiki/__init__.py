@@ -3,7 +3,7 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-db = SQLAlchemy()
+db: SQLAlchemy = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
@@ -21,6 +21,7 @@ def create_app():
     # Must be imported after db is initialized to avoid circular imports
     # Consider a better way to handle this
     from .models.ghost import Ghost
+    from .models.human import Human
 
     @app.route('/ghosts')
     def getGhosts():

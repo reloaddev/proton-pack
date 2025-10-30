@@ -9,7 +9,8 @@ def check_for_foreign_key_without_supplementary_indexes(ast: List[exp.Expression
     indexed_columns: set[Key] = set()
 
     for tree in ast:
-        for foreign_key in tree.find_all(exp.ForeignKey):
+        foreign_keys = tree.find_all(exp.ForeignKey)
+        for foreign_key in foreign_keys:
             table = _find_table_for(foreign_key)
             if not table:
                 continue
@@ -28,6 +29,9 @@ def check_for_foreign_key_without_supplementary_indexes(ast: List[exp.Expression
                 continue
             col_tuple: tuple[str, ...] = tuple(c.lower() for c in indexed_cols)
             indexed_columns.add((table["name"], col_tuple))
+
+    if len(fk_columns) == 0 and len(indexed_columns) == 0:
+        return False
 
     for fk_col in fk_columns:
         for indexed_col in indexed_columns:

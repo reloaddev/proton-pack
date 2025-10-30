@@ -1,0 +1,29 @@
+name: 'Proton Pack GitHub Action'
+description: 'A GitHub Action that analyzes database migration files'
+inputs:
+  migration_file:
+    description: 'Enter a file name'
+    required: true
+    default: ''
+outputs:
+  analysis_result:
+    description: 'An analysis result of the added migrations'
+    value: ${{ steps.proton-pack.outputs.analysis_result }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install Dependencies
+      run: pip install -e .
+      shell: bash
+    - name: Pass Inputs to Shell
+      run: |
+              echo "MIGRATION_FILE=${{ inputs.migration_file }}" >> $GITHUB_ENV
+      shell: bash
+    - name: Run the analyzer
+      id: proton-pack
+      run: python src/proton_pack/action.py
+      shell: bash
