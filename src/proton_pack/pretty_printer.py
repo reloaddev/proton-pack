@@ -15,7 +15,7 @@ def pretty_print(result):
         body += "🧩 [bold yellow]FOREIGN KEY[/] without index (slow queries)\n"
     if result.get("NON_CONCURRENT_INDEX_BUILDS"):
         body += "⏳ [bold yellow]INDEX[/] not built concurrently (table locks)\n"
-    if result.get("NOT_NULL_CONSTRAINTS_DROPPED"):
-        body += "⚠️  [bold yellow]NOT NULL constraints[/] dropped (unexpected NULLs)\n"
+    if result.get("NOT_NULL_ADDED_WITHOUT_DEFAULT"):
+        body += "⚠️  [bold yellow]NOT NULL[/] added without DEFAULT (backfill risk)\n"
 
     console.print(Panel(body, title=text))
