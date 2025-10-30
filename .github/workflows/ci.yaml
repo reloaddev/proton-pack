@@ -21,5 +21,4 @@ jobs:
           python -m pip install '.[dev]'
       - name: Test with pytest
         run: |
-          pip install pytest
-          pytest --cov --cov-fail-under=90
+          pytest --cov=src --cov-fail-under=90
