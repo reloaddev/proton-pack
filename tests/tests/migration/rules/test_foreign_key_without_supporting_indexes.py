@@ -96,3 +96,32 @@ def test_adding_fk_index_to_wrong_table():
     assert result is True
 
 
+def test_drop_index_without_table():
+    # given
+    sql = "DROP INDEX name_idx;"
+
+    # when
+    ast = parse_sql_to_ast(sql)
+    result = check_for_foreign_key_without_supplementary_indexes(ast)
+
+    # then
+    assert result is False
+
+
+# def test_add_and_drop_index():
+#     # given
+#     sql = """
+#         CREATE TABLE ghost (id INTEGER PRIMARY KEY, name TEXT, reporter_id INTEGER, FOREIGN KEY (reporter_id) REFERENCES Human(id));
+#         CREATE INDEX name_idx ON ghost (reporter_id);
+#         DROP INDEX name_idx;
+#     """
+#
+#     # when
+#     ast = parse_sql_to_ast(sql)
+#     result = check_for_foreign_key_without_supplementary_indexes(ast)
+#
+#     # then
+#     assert result is True
+
+
+

@@ -16,5 +16,4 @@ def has_non_concurrent_index_builds(ast: List[exp.Expression]):
             if create.args.get("kind") == "INDEX":
                 if create.args.get("concurrently") is None:
                     unsafe.append(index)
-
     return True if any(unsafe) else False
