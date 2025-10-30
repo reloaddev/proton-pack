@@ -1,11 +1,12 @@
 [project]
 name = "proton-pack"
-version = "1.0.0"
+version = "0.1.0"
 description = "Databse Migration Safety Analyzer"
 requires-python = ">=3.11"
 dependencies = [
     "click>=8.1",
-    "sqlglot>=23"
+    "sqlglot>=23",
+    "rich>=14"
 ]
 
 [project.scripts]
@@ -17,3 +18,10 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests"
+]

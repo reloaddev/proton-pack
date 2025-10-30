@@ -14,6 +14,13 @@ Once installed, you can run the CLI tool using `proton-pack`.
 ## Quickstart
 
 ### Parse SQL to AST
-Using Proton Pack, you can parse SQL to AST, like:
+Using Proton Pack, you can parse SQL files to AST, like:
 
-`proton-pack parse 'SELCT * FROM users'`
+`proton-pack parse <migration-file>`
+
+### Analyze SQL migration file for safety
+Using Proton Pack, you can analyze SQL files for potentially dangerous migrations, like:
+
+`proton-pack analyze <migration-file>`
+
+The analyzed file should be a .sql file.
