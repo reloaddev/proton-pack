@@ -4,6 +4,7 @@ from sqlglot import exp
 from proton_pack.migration.rules.drop_columns import check_for_drop_columns
 from proton_pack.migration.rules.foreign_key_without_supporting_indexes import check_for_foreign_key_without_supplementary_indexes
 from proton_pack.migration.rules.non_concurrent_index_builds import has_non_concurrent_index_builds
+from proton_pack.migration.rules.type_narrow_rule import analyze_narrowing_changes
 
 
 def analyze_ast(ast: List[exp.Expression]) -> Dict[str, bool]:
@@ -18,5 +19,6 @@ def analyze_ast(ast: List[exp.Expression]) -> Dict[str, bool]:
     return {
         "DROP_DETECTED": check_for_drop_columns(ast),
         "FOREIGN_KEY_WITHOUT_SUPP_INDEX": check_for_foreign_key_without_supplementary_indexes(ast),
-        "NON_CONCURRENT_INDEX_BUILDS": has_non_concurrent_index_builds(ast)
+        "NON_CONCURRENT_INDEX_BUILDS": has_non_concurrent_index_builds(ast),
+        "Type narrowed": analyze_narrowing_changes(ast)
     }

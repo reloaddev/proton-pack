@@ -6,20 +6,20 @@ from typing import List, Dict, Any, Tuple, Optional
 # When analyzing an ALTER TABLE statement, we only see the *new* type.
 # We need the existing type to determine if the change is narrowing.
 MOCK_SCHEMA: Dict[str, Dict[str, str]] = {
-    "products": {
-        "description": "VARCHAR(500)",
-        "id": "BIGINT",
+    "humans": {
+        "id": "INT",
+        "name": "Text",
+        "email": "Text",
+        "hire_date": "Date"
     },
-    "user_metrics": {
-        "event_count": "BIGINT",
-    },
-    "finance_data": {
-        "price": "DECIMAL(10, 5)",
-        "exchange_rate": "DOUBLE",
-    },
-    "inventory": {
-        "cost": "NUMERIC(15, 8)",
-    },
+    "ghost": {
+        "id": "INT",
+        "name": "Text",
+        "spooky_level": "INT",
+        "ectoplasm_volume": "BIGINT",
+        "reporter_id": "BIGINT",
+        "danger_rating": "INT"
+    }
 }
 
 # --- Sample SQL Statement (String Input) ---
@@ -138,22 +138,13 @@ def check_bigint_to_int(old_type: str, new_type: str) -> Tuple[bool, str]:
     return False, ""
 
 
-def analyze_narrowing_changes(ast_expressions: List[exp.Expression], schema: Dict[str, Dict[str, str]]):
-    """
-    Analyzes a list of SQL AST expressions (already parsed) to identify 
-    narrowing type changes against a known schema.
-    
-    Args:
-        ast_expressions: A list of sqlglot Expression objects (the parsed AST).
-        schema: The mock or actual database schema containing old types.
-    """
-    print("--- Analyzing SQL ALTER TABLE Statements (AST Input) ---")
+def analyze_narrowing_changes(ast_expressions: List[exp.Expression]):
     narrowing_changes = []
     
     # The input is now assumed to be a list of AST expressions
     for ast in ast_expressions:
         # Check if the expression is an ALTER TABLE statement
-        if isinstance(ast, exp.AlterTable):
+        if isinstance(ast, exp.Alter):
             table_name = ast.this.name
             
             # Iterate through the alterations (ADD, DROP, ALTER COLUMN)
@@ -175,16 +166,15 @@ def analyze_narrowing_changes(ast_expressions: List[exp.Expression], schema: Dic
                     new_type_str = new_type_exp.sql()
                     
                     # 2. Getting the OLD type from mock schema, should be changed to the snapshot when implemented
-                    old_type_str = schema.get(table_name, {}).get(column_name)
+                    old_type_str = MOCK_SCHEMA.get(table_name, {}).get(column_name)
 
                     if not old_type_str:
-                        print(f"[SKIP] {table_name}.{column_name}: Old type not found in schema. Skipping analysis.")
+                        print(f"skipping {table_name}.{column_name}: Old type not found in schema. Skipping analysis.")
                         continue
                         
                     is_narrowing = False
                     reason = ""
                     
-                    # Use SQLGlot to parse the type string parameters for both
                     old_info = get_type(old_type_str)
                     new_info = get_type(new_type_str)
                     
@@ -224,16 +214,3 @@ def analyze_narrowing_changes(ast_expressions: List[exp.Expression], schema: Dic
             print(f"  Reason: {nc['reason']}\n")
     else:
         print("No critical narrowing changes detected for the monitored types.")
-
-
-if __name__ == '__main__':
-    # 1. Parse the SQL string into a list of AST expressions (simulating the upstream parser)
-    try:
-        parsed_ast = sqlglot.parse(SAMPLE_SQL_INPUT)
-    except Exception as e:
-        print(f"Failed to parse SQL input: {e}")
-        parsed_ast = []
-
-    # 2. Execute the analysis by passing the pre-parsed AST
-    analyze_narrowing_changes(parsed_ast, MOCK_SCHEMA)
-s
