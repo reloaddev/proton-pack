@@ -30,10 +30,16 @@ def parse(path):
 
 
 @cli.command(name="analyze")
-@click.argument("file_path")
-def analyze(file_path):
-    with open(file_path, "r") as f:
-        sql = f.read()
+@click.argument("path")
+def analyze(path):
+    if os.path.isfile(path):
+        with open(path, "r") as f:
+            sql = f.read()
+    elif os.path.isdir(path):
+        sql = _read_migration_directory(path)
+    else:
+        click.echo("No migration files found.")
+
     ast = parse_sql_to_ast(sql)
     result = analyze_ast(ast)
     pretty_print(result)
