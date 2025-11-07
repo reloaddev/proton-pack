@@ -51,7 +51,11 @@ def _read_migration_directory(directory_path) -> str | None:
         return None
 
     read_content = ""
-    for file in os.listdir(directory):
+
+    files = os.listdir(directory)
+    sorted_files = sorted(files, key=lambda  f: os.path.getmtime(f"{directory_path}/{os.fsdecode(f)}"), reverse=False)
+
+    for file in sorted_files:
         filename = os.fsdecode(file)
         filename_path = f"{directory_path}/{filename}"
         if os.path.isdir(filename_path):
