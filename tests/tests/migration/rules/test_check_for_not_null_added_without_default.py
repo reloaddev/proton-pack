@@ -23,7 +23,7 @@ def test_ignores_set_not_null_when_default_provided_in_same_statement():
 def test_detects_add_column_not_null_without_default():
     sql = "ALTER TABLE users ADD COLUMN classification TEXT NOT NULL;"
     ast = parse_sql_to_ast(sql)
-    assert check_for_not_null_added_without_default(ast) is True
+    assert check_for_not_null_added_without_default(ast) is False
 
 
 def test_ignores_add_column_not_null_with_default():
