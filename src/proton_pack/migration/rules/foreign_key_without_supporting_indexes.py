@@ -12,21 +12,13 @@ def check_for_foreign_key_without_supplementary_indexes(ast: List[exp.Expression
         foreign_keys = tree.find_all(exp.ForeignKey)
         for foreign_key in foreign_keys:
             table = _find_table_for(foreign_key)
-            if not table:
-                continue
             referencing_cols = _find_referencing_columns_for(foreign_key)
-            if not referencing_cols:
-                continue
             col_tuple: tuple[str, ...] = tuple(c.lower() for c in referencing_cols)
             fk_columns.add((table["name"], col_tuple))
 
         for index in tree.find_all(exp.Index):
             table = _find_table_for(index)
-            if not table:
-                continue
             indexed_cols = _find_indexed_columns_for(index)
-            if not indexed_cols:
-                continue
             col_tuple: tuple[str, ...] = tuple(c.lower() for c in indexed_cols)
             indexed_columns.add((table["name"], col_tuple))
 
