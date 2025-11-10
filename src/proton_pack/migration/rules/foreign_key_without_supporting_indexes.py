@@ -3,77 +3,82 @@ from typing import List
 from sqlglot import exp
 
 
-def check_for_foreign_key_without_supplementary_indexes(ast: List[exp.Expression]) -> bool:
-    Key = tuple[str, tuple[str, ...]]
-    fk_columns: set[Key] = set()
-    indexed_columns: set[Key] = set()
+def check_for_foreign_key_without_supplementary_indexes(ast: List[exp.Expression]) -> List[exp.Expression]:
+    unsafe = []
+
+    fk_columns: set[exp.ForeignKey] = set()
+    indexed_columns: set[exp.Index] = set()
 
     for tree in ast:
-        foreign_keys = tree.find_all(exp.ForeignKey)
-        for foreign_key in foreign_keys:
-            table = _find_table_for(foreign_key)
-            referencing_cols = _find_referencing_columns_for(foreign_key)
-            col_tuple: tuple[str, ...] = tuple(c.lower() for c in referencing_cols)
-            fk_columns.add((table["name"], col_tuple))
+        for foreign_key in tree.find_all(exp.ForeignKey):
+            operation = _find_operation(foreign_key)
+            if type(operation) is exp.Create or type(operation) is exp.Alter:
+                fk_columns.add(foreign_key)
 
         for index in tree.find_all(exp.Index):
-            table = _find_table_for(index)
-            indexed_cols = _find_indexed_columns_for(index)
-            col_tuple: tuple[str, ...] = tuple(c.lower() for c in indexed_cols)
-            indexed_columns.add((table["name"], col_tuple))
-
-    if len(fk_columns) == 0 and len(indexed_columns) == 0:
-        return False
+            operation = _find_operation(index)
+            if type(operation) is exp.Create or type(operation) is exp.Alter:
+                indexed_columns.add(index)
 
     for fk_col in fk_columns:
-        for indexed_col in indexed_columns:
-            if fk_col == indexed_col:
+        if len(indexed_columns) == 0:
+            operation = _find_operation(fk_col)
+            unsafe.append(operation)
+        for index, indexed_col in enumerate(indexed_columns):
+            if _is_matching_columns(indexed_col, fk_col):
+                break
+            if not _is_matching_columns(indexed_col, fk_col) and index == len(indexed_columns) - 1:
+                operation = _find_operation(fk_col)
+                unsafe.append(operation)
+
+    return unsafe
+
+
+def _is_matching_columns(indexed_col: exp.Index, referencing_col: exp.ForeignKey) -> bool:
+    # 1st step: find indexed column names
+    idx_params = indexed_col.find(exp.IndexParameters)
+    idx_columns = [idx_params.args.get("columns")[i].name for i, x in enumerate(idx_params.args.get("columns"))]
+
+    # 2nd step: find referenced column names
+    referencing_columns = []
+    referencing_col_expressions = referencing_col.args.get("expressions")
+    if referencing_col_expressions:
+        for expr in referencing_col_expressions:
+            ident = expr if isinstance(expr, exp.Identifier) else expr.find(exp.Identifier)
+            if ident:
+                referencing_columns.append(ident.name)
+
+    # 2nd step: fallback solution
+    referencing_columns = []
+    for ident in referencing_col.find_all(exp.Identifier):
+        if ident.find_ancestor(exp.Reference) is None:
+            referencing_columns.append(ident.name)
+
+    # 3rd step: match indexed and referencing columns
+    for referencing_col in referencing_columns:
+        if len(idx_columns) == 0:
+            return False
+        for index, indexed_col in enumerate(idx_columns):
+            if referencing_col == indexed_col:
+                break
+            if index == len(idx_columns) - 1:
                 return False
 
+    # No referencing key
     return True
 
 
-def _find_indexed_columns_for(index: exp.Index) -> list:
-    idx_params = index.find(exp.IndexParameters)
-    return [idx_params.args.get("columns")[i].name for i,x in enumerate(idx_params.args.get("columns"))]
-
-
-def _find_referencing_columns_for(fk: exp.ForeignKey) -> list:
-    expressions = fk.args.get("expressions")
-    if expressions:
-        names = []
-        for expr in expressions:
-            ident = expr if isinstance(expr, exp.Identifier) else expr.find(exp.Identifier)
-            if ident:
-                names.append(ident.name)
-        return names
-
-    # Fallback
-    names = []
-    for ident in fk.find_all(exp.Identifier):
-        if ident.find_ancestor(exp.Reference) is None:
-            names.append(ident.name)
-    return names
-
-
-def _find_table_for(node: exp.Expression) -> dict | None:
-    # CREATE TABLE <tbl>(...)
+def _find_operation(node: exp.Expression) -> exp.Expression | None:
     create = node.find_ancestor(exp.Create)
     if create:
-        t = create.find(exp.Table)
-        if t:
-            return { "node": t,"name": t.this.sql(dialect=None) }
+        return create
 
-    # ALTER TABLE <tbl> ...
     alter = node.find_ancestor(exp.Alter)
     if alter:
-        t = alter.find(exp.Table)
-        if t:
-            return { "node": t,"name": t.this.sql(dialect=None) }
+        return alter
 
-    # CREATE INDEX ... ON <tbl> ...
-    t = node.find(exp.Table)
-    if t:
-        return { "node": t,"name": t.this.sql(dialect=None) }
+    drop = node.find_ancestor(exp.Drop)
+    if drop:
+        return drop
 
     return None

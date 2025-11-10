@@ -14,7 +14,7 @@ def run():
     ast = parse_sql_to_ast(sql)
     result = analyze_ast(ast)
 
-    pretty_print(result)
+    pretty_print(sql, result)
 
     # Write to output for further processing, currently unused
     output_path = os.environ.get('GITHUB_OUTPUT')

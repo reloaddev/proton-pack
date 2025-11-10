@@ -15,7 +15,7 @@ def test_adding_fk_index_on_table_creation():
     result = check_for_foreign_key_without_supplementary_indexes(ast)
 
     # then
-    assert result is False
+    assert result == []
 
 
 def test_missing_fk_index_on_table_creation():
@@ -27,7 +27,7 @@ def test_missing_fk_index_on_table_creation():
     result = check_for_foreign_key_without_supplementary_indexes(ast)
 
     # then
-    assert result is True
+    assert result == ast
 
 
 # def test_fk_constraint_counter():
@@ -78,7 +78,7 @@ def test_finding_foreign_key_constraint():
     result = check_for_foreign_key_without_supplementary_indexes(ast)
 
     # then
-    assert result is True
+    assert result == [ast[1]]
 
 
 def test_adding_fk_index_to_wrong_table():
@@ -93,7 +93,7 @@ def test_adding_fk_index_to_wrong_table():
     result = check_for_foreign_key_without_supplementary_indexes(ast)
 
     # then
-    assert result is True
+    assert result == [ast[0]]
 
 
 def test_drop_index_without_table():
@@ -105,7 +105,7 @@ def test_drop_index_without_table():
     result = check_for_foreign_key_without_supplementary_indexes(ast)
 
     # then
-    assert result is False
+    assert result == []
 
 
 # def test_add_and_drop_index():

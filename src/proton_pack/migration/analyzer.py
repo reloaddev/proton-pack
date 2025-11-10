@@ -7,7 +7,7 @@ from proton_pack.migration.rules.non_concurrent_index_builds import has_non_conc
 from proton_pack.migration.rules.check_for_not_null_added_without_default import check_for_not_null_added_without_default
 
 
-def analyze_ast(ast: List[exp.Expression]) -> Dict[str, bool]:
+def analyze_ast(ast: List[exp.Expression]) -> Dict[str, List]:
     """
     Analyze a sqlglot AST for potentially dangerous operations.
 
