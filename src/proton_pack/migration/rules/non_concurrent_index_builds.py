@@ -2,7 +2,7 @@ from typing import List
 from sqlglot import exp
 
 
-def has_non_concurrent_index_builds(ast: List[exp.Expression]):
+def has_non_concurrent_index_builds(ast: List[exp.Expression]) -> List[exp.Expression]:
     """
         A standard index build (without CONCURRENTLY) locks out writes (but not reads) on the table until it's done.
         This can impact the availability of tables negatively.
@@ -15,5 +15,5 @@ def has_non_concurrent_index_builds(ast: List[exp.Expression]):
             create = index.find_ancestor(exp.Create)
             if create.args.get("kind") == "INDEX":
                 if create.args.get("concurrently") is None:
-                    unsafe.append(index)
-    return True if any(unsafe) else False
+                    unsafe.append(create)
+    return unsafe

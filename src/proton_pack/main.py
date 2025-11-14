@@ -42,7 +42,7 @@ def analyze(path):
 
     ast = parse_sql_to_ast(sql)
     result = analyze_ast(ast)
-    pretty_print(result)
+    pretty_print(sql, result)
 
     if any(result):
         sys.exit(1)

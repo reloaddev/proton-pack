@@ -4,6 +4,7 @@ from proton_pack.migration.rules.non_concurrent_index_builds import has_non_conc
 def test_non_concurrent_index_build():
     # given
     sql = """
+        CREATE table ghost;
         CREATE INDEX name_idx ON ghost(name);
     """
 
@@ -12,7 +13,7 @@ def test_non_concurrent_index_build():
     result = has_non_concurrent_index_builds(ast)
 
     # then
-    assert result is True
+    assert result == [ast[1]]
 
 
 def test_concurrent_index_build():
@@ -26,7 +27,7 @@ def test_concurrent_index_build():
     result = has_non_concurrent_index_builds(ast)
 
     # then
-    assert result is False
+    assert result == []
 
 
 
@@ -41,7 +42,7 @@ def test_concurrent_index_build_with_named_index():
     result = has_non_concurrent_index_builds(ast)
 
     # then
-    assert result is False
+    assert result == []
 
 
 def test_no_index_build():
@@ -53,7 +54,7 @@ def test_no_index_build():
     result = has_non_concurrent_index_builds(ast)
 
     # then
-    assert result is False
+    assert result == []
 
 
 def test_alter_index():
@@ -65,7 +66,7 @@ def test_alter_index():
     result = has_non_concurrent_index_builds(ast)
 
     # then
-    assert result is False
+    assert result == []
 
 
 def test_drop_index():
@@ -77,4 +78,4 @@ def test_drop_index():
     result = has_non_concurrent_index_builds(ast)
 
     # then
-    assert result is False
+    assert result == []

@@ -14,7 +14,7 @@ def test_drop_table():
 
     # then
     assert isinstance(result, dict)
-    assert result.get("DROP_DETECTED") is True
+    assert result.get("DROP_DETECTED") == ast
 
 
 def test_drop_column():
@@ -29,7 +29,7 @@ def test_drop_column():
 
     # then
     assert isinstance(result, dict)
-    assert result.get("DROP_DETECTED") is True
+    assert result.get("DROP_DETECTED") == ast
 
 
 def test_drop_of_other_than_table_or_column_is_not_flagged():
@@ -42,7 +42,7 @@ def test_drop_of_other_than_table_or_column_is_not_flagged():
 
     # then
     assert isinstance(result, dict)
-    assert result.get("DROP_DETECTED") is False
+    assert result.get("DROP_DETECTED") == []
 
 
 def test_no_drop_detected():
@@ -55,7 +55,7 @@ def test_no_drop_detected():
 
     # then
     assert isinstance(result, dict)
-    assert result.get("DROP_DETECTED") is False
+    assert result.get("DROP_DETECTED") == []
 
 
 def test_drop_of_index():
@@ -68,4 +68,4 @@ def test_drop_of_index():
 
     # then
     assert isinstance(result, dict)
-    assert result.get("DROP_DETECTED") is False
+    assert result.get("DROP_DETECTED") == []
