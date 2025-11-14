@@ -16,8 +16,8 @@ def parse_sql_to_ast(sql) -> List[exp.Expression]:
 
 # Parse a single SQL statement into its AST representation
 # Parsed using postgres dialect
-def parse_sql_line_to_ast(sql) -> exp.Expression | None:
-    if sql is None or sql == "":
+def parse_sql_line_to_ast(sql: str) -> exp.Expression | None:
+    if sql is None or sql == "" or sql.strip().startswith("--"):
         return None
 
     return parse_one(sql, dialect="postgres")
