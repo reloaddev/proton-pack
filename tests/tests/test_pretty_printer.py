@@ -1,7 +1,7 @@
 from proton_pack.pretty_printer import pretty_print
 from unittest.mock import patch
 
-def test_duplicate_operation_lines():
+def test_similar_operation_lines():
     # given
     with patch("proton_pack.pretty_printer.parse_sql_line_to_ast") as mocked_parse:
         # given
@@ -12,7 +12,7 @@ def test_duplicate_operation_lines():
         result = {
             "DROP_DETECTED": ["DROP_COL_NAME", "DROP_COL_TYPE"]
         }
-        # due to _find_failing_line always traversing the whole sql,
+        # due to _find_failing_line always traversing the whole SQL,
         # parse_sql_line_to_ast is called 3 times in this case
         mocked_parse.side_effect = [
             "DROP_COL_NAME", # _find_failing_line(sql, "DROP_COL_NAME") <-- match
