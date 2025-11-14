@@ -16,22 +16,26 @@ def pretty_print(sql, result):
         body += "🔥 [bold yellow]DROP[/] statements detected (possible data loss)\n"
         for operation in result.get("DROP_DETECTED"):
             line = _find_failing_line(sql, operation)
-            if line is not None:
+            if line is not None and line != "":
                 body += f"  - Check line {line.get_line_number()}: {line.line_content} \n"
     if any(result.get("FOREIGN_KEY_WITHOUT_SUPP_INDEX") or []):
         body += "🧩 [bold yellow]FOREIGN KEY[/] without index (slow queries)\n"
         for operation in result.get("FOREIGN_KEY_WITHOUT_SUPP_INDEX"):
             line = _find_failing_line(sql, operation)
-            if line is not None:
+            if line is not None and line != "":
                 body += f"  - Check line {line.get_line_number()}: {line.line_content} \n"
     if any(result.get("NON_CONCURRENT_INDEX_BUILDS") or []):
         body += "⏳ [bold yellow]INDEX[/] not built concurrently (table locks)\n"
         for operation in result.get("NON_CONCURRENT_INDEX_BUILDS"):
             line = _find_failing_line(sql, operation)
-            if line is not None:
+            if line is not None and line != "":
                 body += f"  - Check line {line.get_line_number()}: {line.line_content} \n"
-    if result.get("NOT_NULL_ADDED_WITHOUT_DEFAULT"):
+    if any(result.get("NOT_NULL_ADDED_WITHOUT_DEFAULT") or []):
         body += "⚠️  [bold yellow]NOT NULL[/] added without DEFAULT (backfill risk)\n"
+        for operation in result.get("NOT_NULL_ADDED_WITHOUT_DEFAULT"):
+            line = _find_failing_line(sql, operation)
+            if line is not None and line != "":
+                body += f"  - Check line {line.get_line_number()}: {line.line_content} \n"
 
     console.print(Panel(body, title=text))
     return body
