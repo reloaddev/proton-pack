@@ -31,7 +31,22 @@ def _remove_alembic_specific_statements(ast: List[exp.Expression]) -> List[exp.E
         if tree is None:
             continue
         table = tree.find(exp.Table)
-        table_name = table.name if table else None
+        table_name = table.name if table else _extract_table_name_from_expression(tree.expression)
+
         if table_name and "alembic" not in table_name.lower():
             filtered.append(tree)
     return filtered
+
+
+def _extract_table_name_from_expression(expression: str) -> str | None:
+    expression_words = expression.strip().split(" ")
+    filtered_words = [x for x in expression_words if x != " "]
+    table_keyword_index = filtered_words.index("TABLE")
+
+    try:
+        table_name = filtered_words[table_keyword_index + 1]
+    except:
+        return None
+
+    return table_name
+
