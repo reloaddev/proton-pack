@@ -16,4 +16,4 @@ jobs:
         with:
           # TODO: analyze all migration files, introduced by a PR
           migration_file: './test-app/ghostbusters-wiki/migrations/sql/mocked/test-safe-migration.sql'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.POST_COMMENT_SECRET }}
