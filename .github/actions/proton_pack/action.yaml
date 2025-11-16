@@ -4,7 +4,9 @@ inputs:
   migration_file:
     description: 'Enter a file name'
     required: true
-    default: ''
+  github_token:
+    description: 'GitHub token, required to access GitHub API'
+    required: true
 outputs:
   analysis_result:
     description: 'An analysis result of the added migrations'
@@ -30,7 +32,7 @@ runs:
     - name: Post result as comment in PR conversation
       uses: actions/github-script@7
       with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
+        github-token: ${{ inputs.github_token }}
         script: |
           github.rest.issues.createComment({
             issue_number: context.issue.number,
