@@ -30,7 +30,7 @@ runs:
       run: python src/proton_pack/action.py
       shell: bash
     - name: Post result as comment in PR conversation
-      uses: actions/github-script@7
+      uses: actions/github-script@v8
       with:
         github-token: ${{ inputs.github_token }}
         script: |
