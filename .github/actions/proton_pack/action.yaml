@@ -27,3 +27,14 @@ runs:
       id: proton-pack
       run: python src/proton_pack/action.py
       shell: bash
+    - name: Post result as comment in PR conversation
+      uses: actions/github-script@7
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '👋 Proton Pack says Hi'
+          })
