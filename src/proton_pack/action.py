@@ -19,7 +19,9 @@ def run():
     # Write to output for further processing, currently unused
     output_path = os.environ.get("GITHUB_OUTPUT")
     with open(output_path, 'a') as f:
-        f.write(f"analysis_result='{printable_result}'\n")
+        f.write("analysis_result<<EOF\n")
+        f.write(printable_result)
+        f.write("\nEOF\n")
 
     if any(result.values()):
         sys.exit(1)
