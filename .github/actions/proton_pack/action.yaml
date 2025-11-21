@@ -38,5 +38,5 @@ runs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: ${{ outputs.analysis_result }}
+            body: ${{ steps.proton-pack.outputs.analysis_result }}
           })
