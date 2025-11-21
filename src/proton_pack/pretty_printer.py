@@ -5,7 +5,7 @@ from rich.text import Text
 from .model.line import Line
 from .migration.parser import parse_sql_line_to_ast
 
-def pretty_print(sql, result):
+def pretty_print(sql, result) -> str:
     if not any(result.values()):
         return ""
 

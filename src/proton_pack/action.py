@@ -14,12 +14,12 @@ def run():
     ast = parse_sql_to_ast(sql)
     result = analyze_ast(ast)
 
-    pretty_print(sql, result)
+    printed_result = pretty_print(sql, result)
 
     # Write to output for further processing, currently unused
     output_path = os.environ.get('GITHUB_OUTPUT')
     with open(output_path, 'a') as f:
-        f.write(f'analysis_result={result}\n')
+        f.write(f'analysis_result={printed_result}\n')
 
     if any(result.values()):
         sys.exit(1)
