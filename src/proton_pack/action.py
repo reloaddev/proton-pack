@@ -23,9 +23,9 @@ def run():
         f.write(printable_result)
         f.write("\nEOF\n")
 
-    # if any(result.values()):
-    #     sys.exit(1)
-    #
+    if any(result.values()):
+        sys.exit(1)
+
     sys.exit(0)
 
 
