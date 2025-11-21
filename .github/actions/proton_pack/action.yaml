@@ -34,9 +34,12 @@ runs:
       with:
         github-token: ${{ inputs.github_token }}
         script: |
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: ${{ steps.proton-pack.outputs.analysis_result }}
-          })
+          const analysisResult = `${{ steps.proton-pack.outputs.analysis_result }}`;
+          if (analysisResult.trim()) {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: analysisResult
+            });
+          }
