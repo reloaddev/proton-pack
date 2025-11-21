@@ -15,5 +15,5 @@ jobs:
         uses: ./.github/actions/proton_pack
         with:
           # TODO: analyze all migration files, introduced by a PR
-          migration_file: './test-app/ghostbusters-wiki/migrations/sql/mocked/test-safe-migration.sql'
+          migration_file: './test-app/ghostbusters-wiki/migrations/sql/mocked/test-dangerous-migration.sql'
           github_token: ${{ secrets.POST_COMMENT_SECRET }}
