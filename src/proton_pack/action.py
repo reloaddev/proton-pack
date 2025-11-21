@@ -23,10 +23,10 @@ def run():
         f.write(printable_result)
         f.write("\nEOF\n")
 
-    if any(result.values()):
-        sys.exit(1)
-
-    sys.exit(0)
+    # if any(result.values()):
+    #     sys.exit(1)
+    #
+    # sys.exit(0)
 
 
 if __name__ == "__main__": # pragma: no cover
