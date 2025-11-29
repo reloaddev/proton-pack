@@ -2,7 +2,7 @@ import sys
 
 from proton_pack.migration.parser import parse_sql_to_ast
 from proton_pack.migration.analyzer import analyze_ast
-from proton_pack.pretty_printer import pretty_print
+from proton_pack.markdown_printer import pretty_print
 
 import os
 

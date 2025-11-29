@@ -1,4 +1,4 @@
-from proton_pack.pretty_printer import pretty_print
+from proton_pack.cli_printer import pretty_print
 from unittest.mock import patch
 
 def test_similar_operation_lines():
