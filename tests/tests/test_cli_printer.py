@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 def test_similar_operation_lines():
     # given
-    with patch("proton_pack.pretty_printer.parse_sql_line_to_ast") as mocked_parse:
+    with patch("proton_pack.cli_printer.parse_sql_line_to_ast") as mocked_parse:
         # given
         sql = """
             ALTER TABLE ghost DROP COLUMN name;
