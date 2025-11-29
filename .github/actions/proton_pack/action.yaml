@@ -30,6 +30,7 @@ runs:
       run: python src/proton_pack/action.py
       shell: bash
     - name: Post result as comment in PR conversation
+      if: ${{ failure() && steps.proton-pack.outputs.analysis_result }}
       uses: actions/github-script@v8
       with:
         github-token: ${{ inputs.github_token }}
