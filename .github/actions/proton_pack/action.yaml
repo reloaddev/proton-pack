@@ -4,7 +4,9 @@ inputs:
   migration_file:
     description: 'Enter a file name'
     required: true
-    default: ''
+  github_token:
+    description: 'GitHub token, required to access GitHub API'
+    required: true
 outputs:
   analysis_result:
     description: 'An analysis result of the added migrations'
@@ -12,10 +14,10 @@ outputs:
 runs:
   using: 'composite'
   steps:
-    - name: Install Python
+    - name: Set up Python 3.14
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.14'
     - name: Install Dependencies
       run: pip install -e .
       shell: bash
@@ -27,3 +29,18 @@ runs:
       id: proton-pack
       run: python src/proton_pack/action.py
       shell: bash
+    - name: Post result as comment in PR conversation
+      if: ${{ failure() && steps.proton-pack.outputs.analysis_result }}
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ inputs.github_token }}
+        script: |
+          const analysisResult = `${{ steps.proton-pack.outputs.analysis_result }}`;
+          if (analysisResult.trim()) {
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: analysisResult
+            });
+          }

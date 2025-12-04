@@ -4,7 +4,7 @@ import click
 
 from .migration.analyzer import analyze_ast
 from .migration.parser import parse_sql_to_ast
-from .pretty_printer import pretty_print
+from .cli_printer import pretty_print
 
 
 @click.group()

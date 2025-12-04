@@ -2,7 +2,7 @@ import sys
 
 from proton_pack.migration.parser import parse_sql_to_ast
 from proton_pack.migration.analyzer import analyze_ast
-from proton_pack.pretty_printer import pretty_print
+from proton_pack.markdown_printer import pretty_print
 
 import os
 
@@ -14,12 +14,14 @@ def run():
     ast = parse_sql_to_ast(sql)
     result = analyze_ast(ast)
 
-    pretty_print(sql, result)
+    printable_result = pretty_print(sql, result)
 
     # Write to output for further processing, currently unused
-    output_path = os.environ.get('GITHUB_OUTPUT')
+    output_path = os.environ.get("GITHUB_OUTPUT")
     with open(output_path, 'a') as f:
-        f.write(f'analysis_result={result}\n')
+        f.write("analysis_result<<EOF\n")
+        f.write(printable_result)
+        f.write("\nEOF\n")
 
     if any(result.values()):
         sys.exit(1)
