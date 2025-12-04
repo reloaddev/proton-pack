@@ -19,7 +19,7 @@ def pretty_print(sql: str, result) -> str:
             line = _find_failing_line(sql, operation)
             if line is not None and line != "":
                 parts.append(
-                    f"  - Check line {line.get_line_number()}: `{line.line_content}`"
+                    f"  - Check line {line.get_line_number()}: {line.line_content}"
                 )
 
     # FOREIGN KEY without supporting index
@@ -29,7 +29,7 @@ def pretty_print(sql: str, result) -> str:
             line = _find_failing_line(sql, operation)
             if line is not None and line != "":
                 parts.append(
-                    f"  - Check line {line.get_line_number()}: `{line.line_content}`"
+                    f"  - Check line {line.get_line_number()}: {line.line_content}"
                 )
 
     # Non-concurrent index builds
@@ -39,7 +39,7 @@ def pretty_print(sql: str, result) -> str:
             line = _find_failing_line(sql, operation)
             if line is not None and line != "":
                 parts.append(
-                    f"  - Check line {line.get_line_number()}: `{line.line_content}`"
+                    f"  - Check line {line.get_line_number()}: {line.line_content}"
                 )
 
     # NOT NULL added without DEFAULT
@@ -49,7 +49,7 @@ def pretty_print(sql: str, result) -> str:
             line = _find_failing_line(sql, operation)
             if line is not None and line != "":
                 parts.append(
-                    f"  - Check line {line.get_line_number()}: `{line.line_content}`"
+                    f"  - Check line {line.get_line_number()}: {line.line_content}"
                 )
 
     return "\n".join(parts) + "\n"
