@@ -31,8 +31,8 @@ def test_similar_operation_lines_markdown():
         # It should have been called three times total as per the side_effect above
         assert "### Migration Check Failed" in print_result
         assert "- 🔥 **DROP** statements detected (possible data loss)" in print_result
-        assert "  - Check line 1: `ALTER TABLE ghost DROP COLUMN name;`" in print_result
-        assert "  - Check line 2: `ALTER TABLE ghost DROP COLUMN type;`" in print_result
+        assert "  - Check line 1: ALTER TABLE ghost DROP COLUMN name;" in print_result
+        assert "  - Check line 2: ALTER TABLE ghost DROP COLUMN type;" in print_result
 
 
 def test_markdown_printer_returns_empty_when_no_issues():
@@ -83,13 +83,13 @@ def test_markdown_printer_renders_each_section_with_lines():
     assert "- ⚠️  **NOT NULL** added without DEFAULT (backfill risk)" in out
 
     # and each bullet line exists with correct content and backticks
-    assert "- Check line 0: `ALTER TABLE t DROP COLUMN c1;`" in out
+    assert "- Check line 0: ALTER TABLE t DROP COLUMN c1;" in out
     assert (
-        "- Check line 1: `ALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (c) REFERENCES p(id);`"
+        "- Check line 1: ALTER TABLE t ADD CONSTRAINT fk FOREIGN KEY (c) REFERENCES p(id);"
         in out
     )
-    assert "- Check line 2: `CREATE INDEX idx ON t(c);`" in out
-    assert "- Check line 3: `ALTER TABLE t ALTER COLUMN c SET NOT NULL;`" in out
+    assert "- Check line 2: CREATE INDEX idx ON t(c);" in out
+    assert "- Check line 3: ALTER TABLE t ALTER COLUMN c SET NOT NULL;" in out
 
 
 essage = "- Check line"
