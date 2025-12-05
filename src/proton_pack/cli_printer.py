@@ -16,8 +16,12 @@ def pretty_print(sql, result) -> str:
     if any(result.get("DROP_DETECTED") or []):
         body += "🔥 [bold yellow]DROP[/] statements detected (possible data loss)"
         body += textwrap.indent(textwrap.dedent("""
-            Dropping tables and columns comes with the risk of data loss. You should make sure that the affected data is
-            either irrelevant in future or properly backed up, before dropping any kind of data.
+            Dropping tables or columns can permanently delete data. Before proceeding, verify that the data is either no
+            longer needed or has been safely archived/backed up. In production, prefer a safe, multi-step approach:
+              - Replace hard deletes with soft deletes when possible.
+              - Migrate traffic away and remove application usage first.
+              - Take a backup and validate restore procedures.
+              - Drop objects only after verifying that no processes rely on them (including FKs/triggers).
         """), "  ")
         for operation in result.get("DROP_DETECTED"):
             line = _find_failing_line(sql, operation)
@@ -27,9 +31,21 @@ def pretty_print(sql, result) -> str:
     if any(result.get("FOREIGN_KEY_WITHOUT_SUPP_INDEX") or []):
         body += "🧩 [bold yellow]FOREIGN KEY[/] without index (slow queries)"
         body += textwrap.indent(textwrap.dedent("""
-            Creating an index on a foreign key can considerably increase query time. If multiple tables are queried
-            together, it usually makes sense to create an index on foreign keys.
-            See https://stackoverflow.com/questions/970562/postgres-and-indexes-on-foreign-keys-and-primary-keys
+            Foreign keys should have a supporting index on the referencing column(s). Without it, Postgres may need to
+            scan many rows to enforce FK checks on updates/deletes and to perform joins, leading to slow queries and
+            increased locking.
+            
+            Note: Indexes add write overhead and storage. On highly insert-heavy tables that are rarely joined and where
+            the referenced key is never updated/deleted, you might choose to omit the index—but this can make 
+            updates/deletes of the referenced key and certain queries much slower.
+            
+            What to do:
+              - Add an index on the foreign key column(s) of the referencing table.
+              - For multi-column foreign keys, include all FK columns; keep their order as defined in the FK.
+              - If queries also filter by other columns, consider a composite index with the FK columns first.
+            Example: CREATE INDEX idx_<table>_<fk> ON <table>(<fk_column>);
+            More info: https://stackoverflow.com/questions/970562/postgres-and-indexes-on-foreign-keys-and-primary-keys
+                      https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-FK
         """), "  ")
         for operation in result.get("FOREIGN_KEY_WITHOUT_SUPP_INDEX"):
             line = _find_failing_line(sql, operation)
@@ -39,11 +55,13 @@ def pretty_print(sql, result) -> str:
     if any(result.get("NON_CONCURRENT_INDEX_BUILDS") or []):
         body += "⏳ [bold yellow]INDEX[/] not built concurrently (table locks)"
         body += textwrap.indent(textwrap.dedent("""
-            Indexes should be created concurrently, to avoid locking of tables in PostgresDB. Imagine you have a large
-            table with a lot of data. Creating an index on of the columns means that the DBMS has to traverse every row,
-            which can potentially take a long time. For that time the affected table is unavailable for writes, which
-            can impact the availability of production systems. Building indexes concurrently avoids that problem.
-            See https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
+            Prefer creating indexes CONCURRENTLY to avoid long exclusive locks on the table. On large tables, a
+            non-concurrent build can block writes for a long time and impact availability.
+            Recommended rollout:
+              - Use: CREATE INDEX CONCURRENTLY idx_<table>_<col> ON <table>(<col>);
+              - Run outside of a transaction block (Postgres requirement).
+              - For existing duplicate/invalid indexes, drop them CONCURRENTLY as well.
+            Docs: https://www.postgresql.org/docs/current/sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY
         """), "  ")
         for operation in result.get("NON_CONCURRENT_INDEX_BUILDS"):
             line = _find_failing_line(sql, operation)
@@ -51,11 +69,14 @@ def pretty_print(sql, result) -> str:
                 body += f"  -- Check line {line.get_line_number()}: {line.line_content} \n"
         body += "\n"
     if any(result.get("NOT_NULL_ADDED_WITHOUT_DEFAULT") or []):
-        body += "🚨 [bold yellow]NOT NULL[/] added without DEFAULT (backfill risk)"
+        body += "️🚨 [bold yellow]NOT NULL[/] added without DEFAULT (backfill risk)"
         body += textwrap.indent(textwrap.dedent("""
-            Changing a column to be NOT NULL, with existing rows containing NULL values, leads to errors in Postgres, if 
-            no new default value is provided. This can potentially break production deployments, if not fixed in time.
-            See https://stackoverflow.com/questions/3997966/can-i-add-a-not-null-column-without-default-value
+              Adding NOT NULL without a DEFAULT can fail if existing rows have NULLs and may require a table scan (locks/latency).
+              What to do:
+                - Backfill NULLs in batches.
+                - (Optional) SET DEFAULT for future writes.
+                - Add CHECK (col IS NOT NULL) NOT VALID; VALIDATE it; then ALTER COLUMN SET NOT NULL.
+            Docs: https://www.postgresql.org/docs/current/sql-altertable.html
         """), "  ")
         for operation in result.get("NOT_NULL_ADDED_WITHOUT_DEFAULT"):
             line = _find_failing_line(sql, operation)
