@@ -78,7 +78,7 @@ def test_cli_printer_renders_each_section_with_lines():
     assert "🔥 [bold yellow]DROP[/] statements detected (possible data loss)" in out
     assert "🧩 [bold yellow]FOREIGN KEY[/] without index (slow queries)" in out
     assert "⏳ [bold yellow]INDEX[/] not built concurrently (table locks)" in out
-    assert "⚠️  [bold yellow]NOT NULL[/] added without DEFAULT (backfill risk)" in out
+    assert "🚨 [bold yellow]NOT NULL[/] added without DEFAULT (backfill risk)" in out
 
     # and each bullet line exists with correct content
     assert "- Check line 0: ALTER TABLE t DROP COLUMN c1;" in out
