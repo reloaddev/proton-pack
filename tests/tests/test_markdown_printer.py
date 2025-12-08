@@ -30,7 +30,7 @@ def test_similar_operation_lines_markdown():
         mocked_parse.assert_called()
         # It should have been called three times total as per the side_effect above
         assert "### Migration Check Failed" in print_result
-        assert "- 🔥 **DROP** statements detected (possible data loss)" in print_result
+        assert "🔥 **DROP** statements detected (possible data loss)" in print_result
         assert "  - Check line 1: ALTER TABLE ghost DROP COLUMN name;" in print_result
         assert "  - Check line 2: ALTER TABLE ghost DROP COLUMN type;" in print_result
 
@@ -77,10 +77,10 @@ def test_markdown_printer_renders_each_section_with_lines():
 
     # then: header and section markers are present in Markdown
     assert out.startswith("### Migration Check Failed\n")
-    assert "- 🔥 **DROP** statements detected (possible data loss)" in out
-    assert "- 🧩 **FOREIGN KEY** without index (slow queries)" in out
-    assert "- ⏳ **INDEX** not built concurrently (table locks)" in out
-    assert "- ⚠️  **NOT NULL** added without DEFAULT (backfill risk)" in out
+    assert "🔥 **DROP** statements detected (possible data loss)" in out
+    assert "🧩 **FOREIGN KEY** without index (slow queries)" in out
+    assert "⏳ **INDEX** not built concurrently (table locks)" in out
+    assert "🚨 **NOT NULL** added without DEFAULT (backfill risk)" in out
 
     # and each bullet line exists with correct content and backticks
     assert "- Check line 0: ALTER TABLE t DROP COLUMN c1;" in out

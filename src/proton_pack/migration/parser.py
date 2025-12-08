@@ -6,7 +6,7 @@ from sqlglot import exp, parse, parse_one
 # Parse multiple SQL statements into its AST representation
 # Parsed using postgres dialect
 def parse_sql_to_ast(sql) -> List[exp.Expression]:
-    if sql is None or sql == "":
+    if sql is None or sql == "" or sql.strip().startswith("--"):
         return []
 
     parsed = parse(sql, dialect="postgres")
