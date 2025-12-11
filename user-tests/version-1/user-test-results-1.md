@@ -38,12 +38,12 @@ database grows.
 ## Task 5: Potential type narrowing while optimizing storage
 The team’s storage bill has skyrocketed recently. The storage of ghost data should be optimized to use less space,
 where possible.
-- User Manual: FAILED (type change without considering existing data)
+- User Manual: OK (type change without considering existing data)
 - User AI: FAILED (type change without considering existing data)
-- User Tool: FAILED (type change without considering existing data
+- User Tool: FAILED (type change without considering existing data)
 
 ## Overall
-- User Manual: 2 + 0 + 1 + 1 + 0 = 4 (1st)
+- User Manual: 2 + 0 + 1 + 1 + 1 = 5 (1st)
 - User AI: 2 + 0 + 1 + 0 + 0 = 3 (3rd)
 - User Tool: 2 + 0 + 0 + 1 + 0 = 3 (3rd)
 
