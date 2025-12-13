@@ -166,7 +166,7 @@ def analyze_narrowing_changes(ast_expressions: List[exp.Expression]):
                     new_type_str = new_type_exp.sql()
                     
                     # 2. Getting the OLD type from mock schema, should be changed to the snapshot when implemented
-                    old_type_str = MOCK_SCHEMA.get(table_name, {}).get(column_name)
+                    old_type_str = ast_expressions.get(table_name, {}).get(column_name)
 
                     if not old_type_str:
                         print(f"skipping {table_name}.{column_name}: Old type not found in schema. Skipping analysis.")
