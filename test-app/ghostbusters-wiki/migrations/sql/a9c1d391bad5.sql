@@ -1,4 +1,4 @@
--- Running upgrade af3c701704d2 ->a9c1d391bad5
+-- Running upgrade af3c701704d2 -> a9c1d391bad5
 
 ALTER TABLE ghost ALTER COLUMN reporter_id SET NOT NULL;
 
