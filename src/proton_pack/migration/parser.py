@@ -25,9 +25,8 @@ def parse_sql_line_to_ast(sql: str) -> exp.Expression | None:
     return parse_one(sql, dialect="postgres")
 
 
-def _filter_comments(string: str):
-    print(string)
-    if string.strip().startswith("--"):
+def _filter_comments(text: str):
+    if text is None or text.strip().startswith("--"):
         return False
     return True
 
@@ -48,6 +47,8 @@ def _remove_alembic_specific_statements(ast: List[exp.Expression]) -> List[exp.E
 
 
 def _extract_table_name_from_expression(expression: str) -> str | None:
+    if expression is None:
+        return None
     expression_words = expression.strip().split(" ")
     filtered_words = [x for x in expression_words if x != " "]
     table_keyword_index = filtered_words.index("TABLE")
