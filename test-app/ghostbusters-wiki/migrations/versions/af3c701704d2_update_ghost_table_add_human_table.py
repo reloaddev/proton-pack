@@ -7,6 +7,7 @@ Create Date: 2025-10-24 16:43:08.626600
 """
 from alembic import op
 import sqlalchemy as sa
+from datetime import date
 
 
 # revision identifiers, used by Alembic.
@@ -56,9 +57,9 @@ def upgrade():
     ])
 
     op.bulk_insert(human_table, [
-        {'id': 1, 'name': 'Peter Venkman', 'email': 'peter@ghostbusters.com', 'hire_date': '1984-06-08'},
-        {'id': 2, 'name': 'Egon Spengler', 'email': 'egon@ghostbusters.com', 'hire_date': '1984-06-08'},
-        {'id': 3, 'name': 'Ray Stantz', 'email': 'ray@ghostbusters.com', 'hire_date': '1984-06-08'}
+        {'id': 1, 'name': 'Peter Venkman', 'email': 'peter@ghostbusters.com', 'hire_date': date(1984, 6, 8)},
+        {'id': 2, 'name': 'Egon Spengler', 'email': 'egon@ghostbusters.com', 'hire_date': date(1984, 6, 8)},
+        {'id': 3, 'name': 'Ray Stantz', 'email': 'ray@ghostbusters.com', 'hire_date': date(1984, 6, 8)}
     ])
 
 
